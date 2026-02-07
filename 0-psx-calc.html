@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Series Calculator</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 1100px; display: flex; gap: 20px; }
+    input, select, button { padding: 6px; margin: 6px 0; width: 100%; box-sizing: border-box; }
+    .box { border: 1px solid #ccc; padding: 12px; margin-top: 15px; width: 100%; }
+    pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+    .sidebar { width: 320px; border: 1px solid #aaa; padding: 12px; height: fit-content; }
+    .main { flex: 1; }
+    .toggle-btn { margin-bottom: 10px; width: 100%; }
+    .hidden { display: none; }
+    .formula { font-family: 'Times New Roman', serif; font-size: 15px; line-height: 1.8; margin-bottom: 18px; padding-bottom: 10px; border-bottom:1px solid #ddd;}
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <button class="toggle-btn" onclick="toggleFormulas()">Show / Hide Formulas</button>
+  <div id="formulaBox" class="hidden">
+    <h3>Discrete Compounding Formulas</h3>
+
+    <div class="formula">
+      <b>Single Payment Series</b><br>
+      <em>Compound Amount (F/P, i, n)</em><br>
+      \[ F = P (1+i)^n \]<br><br>
+      <em>Present Worth (P/F, i, n)</em><br>
+      \[ P = F (1+i)^{-n} \]
+    </div>
+
+    <div class="formula">
+      <b>Equal Payment Series</b><br>
+      <em>Compound Amount (F/A, i, n)</em><br>
+      \[ F = A \frac{(1+i)^n - 1}{i} \]<br><br>
+
+      <em>Sinking Fund (A/F, i, n)</em><br>
+      \[ A = F \frac{i}{(1+i)^n - 1} \]<br><br>
+
+      <em>Present Worth (P/A, i, n)</em><br>
+      \[ P = A \frac{(1+i)^n - 1}{i (1+i)^n} \]<br><br>
+
+      <em>Capital Recovery (A/P, i, n)</em><br>
+      \[ A = P \frac{i (1+i)^n}{(1+i)^n - 1} \]
+    </div>
+
+    <div class="formula">
+      <b>Gradient Series</b><br>
+      <em>Arithmetic Gradient Conversion (A/G, i, n)</em><br>
+      \[ A = G \frac{(1+i)^n - i n - 1}{i ((1+i)^n - 1)} \]
+    </div>
+
+  </div>
+</div>
+
+<div class="main">
+<h2>Payment Series Calculator</h2>
+
+<div class="box">
+  <label>Series Type:</label>
+  <select id="type">
+    <option value="equal_P">Equal Payment Series – Present Worth (P/A)</option>
+    <option value="equal_F">Equal Payment Series – Future Worth (F/A)</option>
+    <option value="sinking_F">Equal Payment Series – Sinking Fund (A/F)</option>
+    <option value="capital_P">Equal Payment Series – Capital Recovery (A/P)</option>
+    <option value="single_P">Single Payment – Present Worth (P/F)</option>
+    <option value="single_F">Single Payment – Future Worth (F/P)</option>
+  </select>
+
+  <label>Payment / Value (A or F or P):</label>
+  <input type="number" id="value" step="any">
+
+  <label>Interest rate i (in decimal, e.g. 0.08):</label>
+  <input type="number" id="i" step="any">
+
+  <label>Number of periods n:</label>
+  <input type="number" id="n" step="any">
+
+  <button onclick="calculate()">Calculate</button>
+</div>
+
+<div class="box">
+  <h3>Result</h3>
+  <div id="result"></div>
+  <h3>Substitution Steps</h3>
+  <pre id="steps"></pre>
+</div>
+
+<script>
+function calculate() {
+  const type = document.getElementById('type').value;
+  const V = parseFloat(document.getElementById('value').value);
+  const i = parseFloat(document.getElementById('i').value);
+  const n = parseFloat(document.getElementById('n').value);
+
+  if(isNaN(V) || isNaN(i) || isNaN(n)) {
+    document.getElementById('result').innerHTML = "Please enter all values correctly.";
+    document.getElementById('steps').textContent = "";
+    return;
+  }
+
+  let res = 0;
+  let steps = "";
+
+  if (type === 'equal_P') {
+    const num = Math.pow(1+i,n) - 1;
+    const den = i*Math.pow(1+i,n);
+    res = V * (num/den);
+    steps = `Formula: P = A ((1+i)^n - 1) / (i (1+i)^n)
+Substitute: P = ${V} ((1+${i})^${n} - 1) / (${i} (1+${i})^${n})
+Numerator = ${(1+i)**n} - 1 = ${num}
+Denominator = ${i} * ${(1+i)**n} = ${den}
+Result: P = ${res}`;
+  }
+
+  if (type === 'equal_F') {
+    const num = Math.pow(1+i,n) - 1;
+    res = V * (num/i);
+    steps = `Formula: F = A ((1+i)^n - 1)/i
+Substitute: F = ${V} ((1+${i})^${n} - 1)/${i}
+Result: F = ${res}`;
+  }
+
+  if (type === 'sinking_F') {
+    const den = Math.pow(1+i,n) - 1;
+    res = V * (i / den);
+    steps = `Formula: A = F i / ((1+i)^n - 1)
+Substitute: A = ${V} * ${i} / ((1+${i})^${n} - 1)
+Denominator = ${(1+i)**n} - 1 = ${den}
+Result: A = ${res}`;
+  }
+
+  if (type === 'capital_P') {
+    const den = Math.pow(1+i,n) - 1;
+    const num = i * Math.pow(1+i,n);
+    res = V * (num/den);
+    steps = `Formula: A = P i (1+i)^n / ((1+i)^n - 1)
+Substitute: A = ${V} * ${i} * (1+${i})^${n} / ((1+${i})^${n} - 1)
+Numerator = ${i} * ${(1+i)**n} = ${num}
+Denominator = ${(1+i)**n} - 1 = ${den}
+Result: A = ${res}`;
+  }
+
+  if (type === 'single_P') {
+    res = V * Math.pow(1+i,-n);
+    steps = `Formula: P = F (1+i)^(-n)
+Substitute: P = ${V} (1+${i})^(-${n})
+Result: P = ${res}`;
+  }
+
+  if (type === 'single_F') {
+    res = V * Math.pow(1+i,n);
+    steps = `Formula: F = P (1+i)^n
+Substitute: F = ${V} (1+${i})^${n}
+Result: F = ${res}`;
+  }
+
+  document.getElementById('result').innerHTML = `<b>Answer:</b> ${res}`;
+  document.getElementById('steps').textContent = steps;
+}
+
+function toggleFormulas() {
+  const box = document.getElementById('formulaBox');
+  box.classList.toggle('hidden');
+}
+</script>
+
+</div>
+</body>
+</html>
