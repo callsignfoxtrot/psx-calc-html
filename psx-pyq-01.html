@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EEFM Study Hub — MIT Manipal</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a25;
+    --surface: #16161f;
+    --surface2: #1e1e2e;
+    --border: #2a2a3d;
+    --text: #e8e8f0;
+    --text2: #9898b8;
+    --text3: #5a5a78;
+    --accent: #7c6af7;
+    --accent2: #a855f7;
+    --accent3: #06b6d4;
+    --gold: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --orange: #f97316;
+    --glow: rgba(124,106,247,0.15);
+    --glow2: rgba(168,85,247,0.08);
+    --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  :root[data-theme="light"] {
+    --bg: #f0f0f8;
+    --bg2: #e8e8f5;
+    --bg3: #dcdcee;
+    --surface: #ffffff;
+    --surface2: #f5f5fc;
+    --border: #d0d0e8;
+    --text: #18182a;
+    --text2: #44446a;
+    --text3: #8888aa;
+    --accent: #5b4de0;
+    --accent2: #8b2fc9;
+    --accent3: #0891b2;
+    --gold: #d97706;
+    --green: #059669;
+    --red: #dc2626;
+    --orange: #ea580c;
+    --glow: rgba(91,77,224,0.08);
+    --glow2: rgba(139,47,201,0.05);
+    --card-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+    overflow-x: hidden;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 2px 20px var(--glow);
+    transition: all 0.3s;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo-badge {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; font-weight: 700; color: white;
+    letter-spacing: -0.5px;
+  }
+  .logo-text { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-sub { font-size: 0.7rem; color: var(--text3); font-family: 'Space Mono', monospace; margin-top: 1px; }
+
+  nav { display: flex; gap: 6px; align-items: center; }
+  .nav-btn {
+    padding: 7px 16px; border-radius: 8px; border: none;
+    background: transparent; color: var(--text2);
+    font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--surface2); color: var(--text);
+  }
+  .nav-btn.active { color: var(--accent); }
+
+  .theme-btn {
+    width: 40px; height: 40px; border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; transition: all 0.25s;
+    color: var(--text);
+  }
+  .theme-btn:hover { border-color: var(--accent); transform: rotate(20deg); box-shadow: 0 0 12px var(--glow); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, var(--glow), transparent);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-family: 'Space Mono', monospace; font-size: 0.72rem;
+    color: var(--text3); margin-bottom: 1.2rem;
+  }
+  .hero-tag span { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800; letter-spacing: -1px;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--text) 40%, var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.6rem;
+  }
+  .hero p { color: var(--text2); font-size: 0.95rem; max-width: 500px; margin: 0 auto; }
+
+  /* ── CO STATS ROW ── */
+  .co-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; padding: 1.5rem 2rem;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .co-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 1.2rem;
+    cursor: pointer; transition: all 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .co-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    border-radius: 14px 14px 0 0;
+  }
+  .co-card[data-co="1"]::before { background: var(--accent); }
+  .co-card[data-co="2"]::before { background: var(--accent3); }
+  .co-card[data-co="3"]::before { background: var(--orange); }
+  .co-card[data-co="4"]::before { background: var(--accent2); }
+  .co-card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow); border-color: var(--accent); }
+  .co-card.active { border-color: var(--accent); box-shadow: 0 0 20px var(--glow); }
+
+  .co-num {
+    font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--text3);
+    margin-bottom: 0.4rem; letter-spacing: 1px;
+  }
+  .co-title { font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 0.8rem; line-height: 1.3; }
+  .co-marks {
+    font-size: 1.8rem; font-weight: 800;
+    font-family: 'Space Mono', monospace;
+  }
+  .co-card[data-co="1"] .co-marks { color: var(--accent); }
+  .co-card[data-co="2"] .co-marks { color: var(--accent3); }
+  .co-card[data-co="3"] .co-marks { color: var(--orange); }
+  .co-card[data-co="4"] .co-marks { color: var(--accent2); }
+
+  .co-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.6rem; }
+  .co-bar { height: 100%; border-radius: 2px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+  .co-card[data-co="1"] .co-bar { background: var(--accent); }
+  .co-card[data-co="2"] .co-bar { background: var(--accent3); }
+  .co-card[data-co="3"] .co-bar { background: var(--orange); }
+  .co-card[data-co="4"] .co-bar { background: var(--accent2); }
+
+  /* ── MAIN LAYOUT ── */
+  .main { display: grid; grid-template-columns: 280px 1fr; gap: 0; max-width: 1300px; margin: 0 auto; padding: 0 2rem 3rem; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    padding-right: 1.5rem;
+    border-right: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  .section-label {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--text3); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 0.6rem; margin-top: 1.2rem;
+  }
+  .sidebar-filter {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .filter-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px; border: none;
+    background: transparent; color: var(--text2);
+    font-family: 'Syne', sans-serif; font-size: 0.83rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; text-align: left; width: 100%;
+  }
+  .filter-btn:hover { background: var(--surface2); color: var(--text); }
+  .filter-btn.active { background: var(--surface2); color: var(--accent); }
+  .filter-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .filter-count {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace; font-size: 0.7rem;
+    color: var(--text3);
+  }
+
+  /* ── CONTENT AREA ── */
+  .content { padding-left: 1.5rem; padding-top: 1rem; }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex; gap: 0; border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+  .tab {
+    padding: 10px 18px; border: none; background: transparent;
+    color: var(--text3); font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── SEARCH ── */
+  .search-wrap { position: relative; margin-bottom: 1.2rem; }
+  .search-input {
+    width: 100%; padding: 11px 16px 11px 42px;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 10px; color: var(--text);
+    font-family: 'Syne', sans-serif; font-size: 0.88rem;
+    outline: none; transition: all 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+  .search-input::placeholder { color: var(--text3); }
+  .search-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--text3); font-size: 0.9rem; pointer-events: none;
+  }
+
+  /* ── QUESTION CARDS ── */
+  .question-list { display: flex; flex-direction: column; gap: 10px; }
+  .q-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 1rem 1.2rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .q-card:hover { border-color: var(--accent); box-shadow: 0 2px 16px var(--glow); }
+  .q-card.expanded { border-color: var(--accent); }
+
+  .q-header { display: flex; align-items: flex-start; gap: 12px; }
+  .q-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .tag {
+    padding: 2px 8px; border-radius: 4px; font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .tag-co1 { background: rgba(124,106,247,0.15); color: var(--accent); }
+  .tag-co2 { background: rgba(6,182,212,0.15); color: var(--accent3); }
+  .tag-co3 { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .tag-co4 { background: rgba(168,85,247,0.15); color: var(--accent2); }
+  .tag-bl3 { background: rgba(16,185,129,0.15); color: var(--green); }
+  .tag-bl4 { background: rgba(245,158,11,0.15); color: var(--gold); }
+  .tag-marks { background: var(--surface2); color: var(--text2); }
+  .tag-year { background: var(--surface2); color: var(--text3); }
+  .tag-type { background: rgba(124,106,247,0.1); color: var(--accent); }
+
+  .q-text { font-size: 0.88rem; color: var(--text); line-height: 1.5; flex: 1; }
+  .q-expand-icon {
+    color: var(--text3); font-size: 0.7rem; flex-shrink: 0; margin-top: 2px;
+    transition: transform 0.2s;
+  }
+  .q-card.expanded .q-expand-icon { transform: rotate(180deg); }
+
+  .q-body {
+    display: none; margin-top: 1rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .q-card.expanded .q-body { display: block; }
+  .q-hint {
+    font-family: 'Space Mono', monospace; font-size: 0.75rem;
+    color: var(--text2); line-height: 1.6;
+  }
+  .q-hint b { color: var(--accent); }
+
+  /* ── TOPIC VIEW ── */
+  .topic-list { display: flex; flex-direction: column; gap: 6px; }
+  .topic-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .topic-item:hover { border-color: var(--accent); background: var(--surface2); }
+  .lesson-num {
+    font-family: 'Space Mono', monospace; font-size: 0.7rem;
+    color: var(--text3); width: 28px; flex-shrink: 0;
+  }
+  .topic-text { font-size: 0.83rem; color: var(--text); flex: 1; }
+  .topic-co { flex-shrink: 0; }
+
+  /* ── FORMULA VIEW ── */
+  .formula-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .formula-tab {
+    padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text2);
+    font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .formula-tab:hover, .formula-tab.active {
+    background: var(--accent); border-color: var(--accent); color: white;
+  }
+  .formula-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .formula-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 1.1rem;
+    transition: all 0.2s;
+  }
+  .formula-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px var(--glow); }
+  .formula-name { font-size: 0.78rem; font-weight: 700; color: var(--text3); margin-bottom: 0.5rem; letter-spacing: 0.5px; text-transform: uppercase; }
+  .formula-expr {
+    font-family: 'Space Mono', monospace; font-size: 0.88rem;
+    color: var(--accent); background: var(--bg2);
+    padding: 8px 12px; border-radius: 6px; margin-bottom: 0.5rem;
+    word-break: break-all;
+  }
+  .formula-desc { font-size: 0.78rem; color: var(--text2); line-height: 1.5; }
+
+  /* ── ASSESSMENT TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 16px; }
+  .timeline-item {
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .tl-left {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    flex-shrink: 0; width: 60px;
+  }
+  .tl-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; font-weight: 700;
+    border: 2px solid var(--accent); color: var(--accent); background: var(--surface);
+    flex-shrink: 0;
+  }
+  .tl-line { width: 2px; background: var(--border); flex: 1; min-height: 20px; }
+  .tl-card {
+    flex: 1; background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 4px;
+    transition: all 0.2s;
+  }
+  .tl-card:hover { border-color: var(--accent); }
+  .tl-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+  .tl-detail { font-size: 0.78rem; color: var(--text2); line-height: 1.5; }
+  .tl-marks {
+    display: inline-block; margin-top: 8px;
+    padding: 2px 10px; border-radius: 4px;
+    font-family: 'Space Mono', monospace; font-size: 0.72rem;
+    background: rgba(124,106,247,0.15); color: var(--accent);
+  }
+  .tl-topics {
+    margin-top: 8px; font-size: 0.75rem; color: var(--text3);
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ── WEIGHT CHART ── */
+  .weight-chart { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.2rem; }
+  .weight-title { font-weight: 700; font-size: 1rem; margin-bottom: 1.2rem; }
+  .weight-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .weight-label { font-size: 0.8rem; font-weight: 600; width: 80px; flex-shrink: 0; }
+  .weight-track { flex: 1; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+  .weight-fill { height: 100%; border-radius: 5px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+  .weight-val { font-family: 'Space Mono', monospace; font-size: 0.78rem; color: var(--text2); width: 50px; text-align: right; flex-shrink: 0; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center; padding: 3rem;
+    color: var(--text3); font-size: 0.88rem;
+  }
+  .empty-state .emoji { font-size: 2rem; margin-bottom: 0.8rem; }
+
+  /* ── PANEL SECTIONS ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── BLOOM BL LEGEND ── */
+  .bl-legend {
+    display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .bl-item {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--text2);
+    padding: 4px 10px; border-radius: 6px; background: var(--surface);
+    border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;
+  }
+  .bl-item.active { border-color: var(--accent); color: var(--accent); }
+  .bl-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .co-stats { grid-template-columns: repeat(2, 1fr); }
+    .main { grid-template-columns: 1fr; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 1rem; }
+    .content { padding-left: 0; }
+    nav .nav-btn { display: none; }
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in { animation: fadeIn 0.3s ease forwards; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:none;} }
+
+  .stagger > * { animation: fadeIn 0.3s ease forwards; opacity: 0; }
+  .stagger > *:nth-child(1){animation-delay:0.05s}
+  .stagger > *:nth-child(2){animation-delay:0.1s}
+  .stagger > *:nth-child(3){animation-delay:0.15s}
+  .stagger > *:nth-child(4){animation-delay:0.2s}
+  .stagger > *:nth-child(5){animation-delay:0.25s}
+  .stagger > *:nth-child(6){animation-delay:0.3s}
+  .stagger > *:nth-child(7){animation-delay:0.35s}
+  .stagger > *:nth-child(8){animation-delay:0.4s}
+  .stagger > *:nth-child(n+9){animation-delay:0.45s}
+
+  /* count badge */
+  .result-count {
+    font-family: 'Space Mono', monospace; font-size: 0.72rem;
+    color: var(--text3); margin-bottom: 0.8rem;
+  }
+  .result-count b { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-badge">EE<br>FM</div>
+    <div>
+      <div class="logo-text">EEFM Study Hub</div>
+      <div class="logo-sub">HUM 3021 · MIT Manipal · VI Sem</div>
+    </div>
+  </div>
+  <nav>
+    <button class="nav-btn active" onclick="showPanel('questions', this)">Questions</button>
+    <button class="nav-btn" onclick="showPanel('topics', this)">Topics</button>
+    <button class="nav-btn" onclick="showPanel('formulas', this)">Formulas</button>
+    <button class="nav-btn" onclick="showPanel('assessment', this)">Assessments</button>
+  </nav>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag"><span></span> VI Semester · Jan–May 2026</div>
+  <h1>Engineering Economics &<br>Financial Management</h1>
+  <p>Your complete exam prep dashboard — questions, topics, formulas, and assessments all in one place.</p>
+</div>
+
+<!-- CO STATS -->
+<div class="co-stats stagger">
+  <div class="co-card" data-co="1" onclick="filterByCO(1, this)">
+    <div class="co-num">CO 1</div>
+    <div class="co-title">Compute worth of money at various points of time</div>
+    <div class="co-marks">30</div>
+    <div style="font-size:0.72rem;color:var(--text3);margin-top:2px;">marks · 14 hrs</div>
+    <div class="co-bar-wrap"><div class="co-bar" style="width:30%"></div></div>
+  </div>
+  <div class="co-card" data-co="2" onclick="filterByCO(2, this)">
+    <div class="co-num">CO 2</div>
+    <div class="co-title">Basic techniques of Financial Statement Analysis</div>
+    <div class="co-marks">20</div>
+    <div style="font-size:0.72rem;color:var(--text3);margin-top:2px;">marks · 4 hrs</div>
+    <div class="co-bar-wrap"><div class="co-bar" style="width:20%"></div></div>
+  </div>
+  <div class="co-card" data-co="3" onclick="filterByCO(3, this)">
+    <div class="co-num">CO 3</div>
+    <div class="co-title">Assess the impact of risk in projects</div>
+    <div class="co-marks">15</div>
+    <div style="font-size:0.72rem;color:var(--text3);margin-top:2px;">marks · 6 hrs</div>
+    <div class="co-bar-wrap"><div class="co-bar" style="width:15%"></div></div>
+  </div>
+  <div class="co-card" data-co="4" onclick="filterByCO(4, this)">
+    <div class="co-num">CO 4</div>
+    <div class="co-title">Evaluate the economic feasibility of projects</div>
+    <div class="co-marks">35</div>
+    <div style="font-size:0.72rem;color:var(--text3);margin-top:2px;">marks · 12 hrs</div>
+    <div class="co-bar-wrap"><div class="co-bar" style="width:35%"></div></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="section-label">Filter by CO</div>
+    <div class="sidebar-filter">
+      <button class="filter-btn active" onclick="filterByCOSidebar(0, this)">
+        <span class="filter-dot" style="background:var(--text3)"></span> All Outcomes
+        <span class="filter-count" id="count-all">—</span>
+      </button>
+      <button class="filter-btn" onclick="filterByCOSidebar(1, this)">
+        <span class="filter-dot" style="background:var(--accent)"></span> CO 1 · TVM
+        <span class="filter-count" id="count-1">—</span>
+      </button>
+      <button class="filter-btn" onclick="filterByCOSidebar(2, this)">
+        <span class="filter-dot" style="background:var(--accent3)"></span> CO 2 · Finance
+        <span class="filter-count" id="count-2">—</span>
+      </button>
+      <button class="filter-btn" onclick="filterByCOSidebar(3, this)">
+        <span class="filter-dot" style="background:var(--orange)"></span> CO 3 · Risk
+        <span class="filter-count" id="count-3">—</span>
+      </button>
+      <button class="filter-btn" onclick="filterByCOSidebar(4, this)">
+        <span class="filter-dot" style="background:var(--accent2)"></span> CO 4 · Feasibility
+        <span class="filter-count" id="count-4">—</span>
+      </button>
+    </div>
+
+    <div class="section-label" style="margin-top:1.4rem">Filter by Bloom's Level</div>
+    <div class="sidebar-filter">
+      <button class="filter-btn active" onclick="filterByBL(0, this)">
+        <span class="filter-dot" style="background:var(--text3)"></span> All Levels
+      </button>
+      <button class="filter-btn" onclick="filterByBL(3, this)">
+        <span class="filter-dot" style="background:var(--green)"></span> BL 3 · Apply
+      </button>
+      <button class="filter-btn" onclick="filterByBL(4, this)">
+        <span class="filter-dot" style="background:var(--gold)"></span> BL 4 · Analyse
+      </button>
+    </div>
+
+    <div class="section-label" style="margin-top:1.4rem">Filter by Type</div>
+    <div class="sidebar-filter">
+      <button class="filter-btn active" onclick="filterByType('all', this)">
+        <span class="filter-dot" style="background:var(--text3)"></span> All Types
+      </button>
+      <button class="filter-btn" onclick="filterByType('numerical', this)">
+        <span class="filter-dot" style="background:var(--accent)"></span> Numerical
+      </button>
+      <button class="filter-btn" onclick="filterByType('descriptive', this)">
+        <span class="filter-dot" style="background:var(--accent3)"></span> Descriptive
+      </button>
+      <button class="filter-btn" onclick="filterByType('mcq', this)">
+        <span class="filter-dot" style="background:var(--gold)"></span> MCQ
+      </button>
+    </div>
+
+    <div class="section-label" style="margin-top:1.4rem">Marks Distribution</div>
+    <div class="weight-chart" style="padding:1rem;margin-bottom:0;">
+      <div class="weight-row">
+        <div class="weight-label" style="color:var(--accent);font-size:0.75rem;">CO1</div>
+        <div class="weight-track"><div class="weight-fill" style="width:30%;background:var(--accent)"></div></div>
+        <div class="weight-val">30M</div>
+      </div>
+      <div class="weight-row">
+        <div class="weight-label" style="color:var(--accent3);font-size:0.75rem;">CO2</div>
+        <div class="weight-track"><div class="weight-fill" style="width:20%;background:var(--accent3)"></div></div>
+        <div class="weight-val">20M</div>
+      </div>
+      <div class="weight-row">
+        <div class="weight-label" style="color:var(--orange);font-size:0.75rem;">CO3</div>
+        <div class="weight-track"><div class="weight-fill" style="width:15%;background:var(--orange)"></div></div>
+        <div class="weight-val">15M</div>
+      </div>
+      <div class="weight-row">
+        <div class="weight-label" style="color:var(--accent2);font-size:0.75rem;">CO4</div>
+        <div class="weight-track"><div class="weight-fill" style="width:35%;background:var(--accent2)"></div></div>
+        <div class="weight-val">35M</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- QUESTIONS PANEL -->
+    <div class="panel active" id="panel-questions">
+      <div class="tab-bar">
+        <button class="tab active">Past Exam Questions</button>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search questions, topics, keywords..." oninput="renderQuestions()">
+      </div>
+      <div class="result-count" id="resultCount"></div>
+      <div class="question-list stagger" id="questionList"></div>
+    </div>
+
+    <!-- TOPICS PANEL -->
+    <div class="panel" id="panel-topics">
+      <div class="tab-bar">
+        <button class="tab active">Lesson Plan</button>
+      </div>
+      <div class="topic-list stagger" id="topicList"></div>
+    </div>
+
+    <!-- FORMULAS PANEL -->
+    <div class="panel" id="panel-formulas">
+      <div class="tab-bar">
+        <button class="tab active">Formula Reference</button>
+      </div>
+      <div class="formula-tabs" id="formulaTabs"></div>
+      <div class="formula-grid stagger" id="formulaGrid"></div>
+    </div>
+
+    <!-- ASSESSMENT PANEL -->
+    <div class="panel" id="panel-assessment">
+      <div class="tab-bar">
+        <button class="tab active">Assessment Timeline</button>
+      </div>
+      <div class="timeline stagger" id="timeline"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────
+const QUESTIONS = [
+  // TVM / CO1
+  { id:1, text:"A mining company purchased an excavator at Rs. 1 Crore with a depreciable life of 10 years. Using 15% declining balance method (zero salvage), calculate depreciation and book value for all years. Also compute straight-line depreciation.", co:1, bl:3, marks:5, year:"Nov 2022", type:"numerical", hint:"DB depreciation each year = rate × book value. SLM = (Cost - Salvage) / Life." },
+  { id:2, text:"Assume you borrowed a short-term loan of Rs. 1 Lakh at 2% per month. Find the effective annual interest rate and amount to be repaid at end of six months.", co:1, bl:3, marks:2, year:"Nov 2022", type:"numerical", hint:"EAR = (1 + r)^n - 1. For 6 months repayment: F = P(1+i)^n." },
+  { id:3, text:"A new company estimates sales increase of $1.5M one year from now, then $1M every semi-annual from 1.5 to 3 years. MARR = 19.50%/year compounded quarterly. Find maximum spend now to break even.", co:1, bl:4, marks:3, year:"Nov 2022", type:"numerical", hint:"Convert MARR to semi-annual effective rate. Draw CFD and find PW of all inflows." },
+  { id:4, text:"An employee (age 55) must choose between VRS (125% of current salary for balance period) and working till 65 with salary growing at Rs. 2L/year gradient. Current salary Rs. 15L/year, i = 8%. Which is financially attractive?", co:1, bl:4, marks:4, year:"Nov 2022", type:"numerical", hint:"Find PW of both options. VRS: lump sum = 125% × 15L × 10 years. Working: gradient series PW." },
+  { id:5, text:"A bank with 8% risk-free rate adds 5% annual risk premium. If Rs. 50L is lent for 15 years, what annual amount should the bank recover until maturity?", co:1, bl:3, marks:2, year:"Nov 2022", type:"numerical", hint:"Total interest rate = 8+5 = 13%. Use capital recovery factor A = P(A/P, 13%, 15)." },
+  { id:6, text:"How much money was deposited 35 years ago at 6%/year if it provides perpetual income of $10,000/year starting year 35?", co:1, bl:3, marks:3, year:"Dec 2021", type:"numerical", hint:"For perpetuity starting at year n: PV at year n = A/i. Discount back to year 0 using P/F factor." },
+  { id:7, text:"A company plans expansion needing $500,000 after 5 years and $250,000 the following year. Determine quarterly savings needed given varying interest rates: 12%/yr compounded quarterly (yr 1-3), monthly (yr 4-5).", co:1, bl:4, marks:3, year:"Dec 2021", type:"numerical", hint:"Find PW or FW of required amounts, then convert to quarterly annuity accounting for changing rates." },
+  { id:8, text:"You borrowed $1,000 at 8% compounded annually. Repayments: $100 (yr1), $300 (yr2), $500 (yr3), X (yr4). Find X to fully pay off the loan.", co:1, bl:3, marks:1, year:"Dec 2021 MCQ", type:"mcq", hint:"Balance after each payment = Previous balance × 1.08 − payment." },
+  { id:9, text:"A person needs Rs.5,00,000/year for 15 years after retiring at 60 (currently 40). Initial deposit Rs.1,00,000 now. At 7%, find additional uniform annual deposit till retirement.", co:1, bl:3, marks:1, year:"Dec 2021 MCQ", type:"mcq", hint:"FW of retirement fund needed = 5L(P/A,7%,15) brought to retirement point. Subtract FW of initial deposit." },
+  { id:10, text:"An engineering student bought a car for INR 7,00,000 in 12 monthly payments beginning now. Nominal interest 12% compounded quarterly. After 6 payments he sells. Buyer pays off balance + Rs.2,00,000. What does the car cost the buyer?", co:1, bl:4, marks:4, year:"Feb 2022 Make-up", type:"numerical", hint:"Convert nominal rate to monthly effective rate. Find outstanding loan balance at month 6 using PW of remaining payments." },
+  { id:11, text:"An engineer took over a manufacturing plant for Rs.25,00,000 with Rs.5,00,000/year operating cost for 10 years. Find minimum annual revenue. After 5 years, upgrades for Rs.15,00,000 saving Rs.2,00,000/year. Find new minimum revenue (i=12%).", co:1, bl:3, marks:3, year:"May 2022", type:"numerical", hint:"Capital recovery = P(A/P,i,n). Split into two phases and compute AW for each." },
+  { id:12, text:"A British conglomerate bought a Canadian chain for £75M. Net loss of £10M at year 1, then increasing by £5M/year gradient. MARR=12%. (a) Is selling at £159.5M (now, year 3) achieving MARR? (b) What selling price at year 5 just meets MARR?", co:1, bl:4, marks:4, year:"May 2022", type:"numerical", hint:"Compute FW at year 3 of all cash flows. Compare with sale price." },
+  { id:13, text:"What is the quarterly deposit C such that you can withdraw $1,500 at quarters 2,4,6 and $2,500 at quarter 8? i = 12% compounded monthly.", co:1, bl:3, marks:3, year:"May 2022", type:"numerical", hint:"Convert monthly rate to quarterly effective rate. Set PW of deposits = PW of withdrawals." },
+  { id:14, text:"Wilson Technology deposits a lump sum now. Earns 10% compounded monthly (yr 1-2), 12% compounded quarterly (yr 3-4). Withdrawals: $50K (yr1), $6K (yr2), $0 (yr3), $10K (yr4). Find required deposit.", co:1, bl:4, marks:3, year:"May 2022", type:"numerical", hint:"Bring all withdrawals to PW using effective rates for each period." },
+  { id:15, text:"A person buys a machine with Rs.10,000 down payment and Rs.8,000/year for 5 years starting 3 years from now at 10%/year. Find total cost of machine.", co:1, bl:3, marks:3, year:"Jul 2022", type:"numerical", hint:"PW = 10000 + 8000(P/A,10%,5)(P/F,10%,2). The deferred annuity starts at year 3 (payments at end = years 3-7)." },
+  { id:16, text:"Ms. Saloni deposits Rs.5L/year for 4 years from now. 2 years after last deposit she increases by 10% for 4 more years. Then Rs.3.5L at year 10. At 12% compounded monthly, half is transferred at year 16 to 14% compounded quarterly account. Find balance in each after 2 years.", co:1, bl:4, marks:4, year:"Mid-term Sep 2023", type:"numerical", hint:"Effective annual = (1+0.12/12)^12 - 1 = 12.68%. Find FW at year 16, split, then grow each for 2 years at respective rates." },
+
+  // CO2 / Financial Statements
+  { id:17, text:"Define and state the significance of interest coverage ratio, inventory turnover ratio, and return on investment ratio.", co:2, bl:3, marks:3, year:"Nov 2022", type:"descriptive", hint:"ICR = EBIT/Interest. ITR = COGS/Avg Inventory. ROI = Net Income/Total Assets × 100." },
+  { id:18, text:"For ABC Company: Sales 2,07,000 (20X2), 1,29,000 (20X1). COGS, inventories, receivables, current liabilities given. Compute current ratio, quick ratio, average collection period, and inventory turnover for 20X1 and 20X2. Comment on liquidity change.", co:2, bl:4, marks:5, year:"Nov 2022", type:"numerical", hint:"Current ratio = Current Assets / Current Liabilities. Quick ratio excludes inventory. Avg collection = Debtors/Sales × 365." },
+  { id:19, text:"Alex Company data: avg cash $1M, avg inventory $5M, avg payables $3M, avg receivables $3M, COGS $15M, Sales $20M, EBIT $2M, LT loan $8M at 10%. Calculate inventory turnover, current ratio, quick ratio, interest coverage ratio.", co:2, bl:4, marks:4, year:"May 2022", type:"numerical", hint:"ITR = 15/5 = 3. CR = (1+5+3)/(3) = 3. QR = (1+3)/3. ICR = 2/(8×0.10)." },
+  { id:20, text:"State the significance of (a) Liquidity ratios (b) Structural ratios.", co:2, bl:3, marks:2, year:"May 2022", type:"descriptive", hint:"Liquidity ratios measure short-term solvency. Structural/leverage ratios measure long-term solvency and capital structure." },
+  { id:21, text:"From Skanda Industries Ltd. Balance Sheet (31 Mar 2021): Calculate Stock Turnover Ratio and Debtors Turnover Ratio. Also calculate Debt-Equity ratio, Gross Profit Ratio, Interest Coverage Ratio, Current Ratio.", co:2, bl:4, marks:6, year:"Feb 2022 Make-up", type:"numerical", hint:"STR = COGS/Avg Stock. DTR = Sales/Avg Debtors. GP ratio = (Sales-COGS)/Sales × 100." },
+
+  // CO3 / Risk
+  { id:22, text:"Explain Sunk cost and Capital Recovery Cost as key elements in replacement analysis.", co:3, bl:3, marks:2, year:"Nov 2022", type:"descriptive", hint:"Sunk cost = past expenditure, irrelevant to decisions. Capital recovery cost = annual cost of owning an asset = depreciation + opportunity cost." },
+  { id:23, text:"Determine economic service life for a machine costing $15,000 with given O&M costs and salvage values for years 1-5 at 12% interest.", co:3, bl:4, marks:4, year:"Feb 2022 Make-up", type:"numerical", hint:"Compute EUAC for each year. ESL = year with minimum EUAC = min(Capital cost + O&M)." },
+  { id:24, text:"Determine economic service life for equipment with $10,000 first cost, given operating costs and salvage values for years 1-7 at 10%.", co:3, bl:4, marks:4, year:"May 2022", type:"numerical", hint:"EUAC(n) = [P(F/P,i,n) - Sn + Sum of OC(F/P,i,n-k)](A/F,i,n) + Sn(i). Minimize over n." },
+  { id:25, text:"A car can be sold for Rs.3.5L now or kept for 5 more years with escalating O&M and declining salvage values. Determine economic service life of old car (i=8%).", co:3, bl:4, marks:4, year:"Nov 2022", type:"numerical", hint:"Compute annual cost for keeping 1,2,3,4,5 more years. Find year with minimum EUAC." },
+  { id:26, text:"In engineering economics, a sensitivity analysis reveals how much NPW changes in response to a given change in an input variable. Identify the correct definition.", co:3, bl:1, marks:1, year:"Dec 2021 MCQ", type:"mcq", hint:"Sensitivity analysis: change one variable, observe effect on NPW while holding others constant." },
+  { id:27, text:"Scenario analysis is defined as: Change in NPW for a range of likely values of key variables. Identify correct option.", co:3, bl:1, marks:1, year:"Dec 2021 MCQ", type:"mcq", hint:"Scenario analysis considers multiple variable changes simultaneously, unlike sensitivity analysis." },
+
+  // CO4 / Economic Feasibility
+  { id:28, text:"There are two alternatives for laying a road: concrete (Rs.10Cr/km, 20yr life, escalating maintenance) vs bitumen (Rs.3Cr/km, 5yr life, Rs.75L+30L gradient maintenance). At 8% select based on Annual Worth analysis.", co:4, bl:4, marks:4, year:"Nov 2022", type:"numerical", hint:"Use LCM of lives (20 years). Convert all costs to equivalent annual worth. Select lower AW cost." },
+  { id:29, text:"Evaluate lease vs buy for a color copier. Lease: $7,000/year for 3 years. Buy: $29,000 with $1,500/year maintenance and $12,000 resale. MARR=15%. Use ROR method.", co:4, bl:4, marks:3, year:"Nov 2022", type:"numerical", hint:"Compute incremental cash flow (Buy-Lease). Find IRR of incremental CF. If IRR > MARR, choose Buy." },
+  { id:30, text:"ABC International lease vs buy a copier. Year 0: Lease -7000, Buy -29000. Years 1-3: Lease -7000, Buy -1500. Resale $12,000. MARR=15%. Recommend using ROR method.", co:4, bl:4, marks:3, year:"Nov 2022", type:"numerical", hint:"Incremental investment = Buy - Lease. Find IRR on incremental. Compare to MARR." },
+  { id:31, text:"A newly constructed bridge costs $5M. Renovation every 15 years at $1M. Annual M&R = $100,000. At 8%, find (a) capitalized cost and (b) if renovated every 20 years.", co:4, bl:3, marks:3, year:"Nov 2022", type:"numerical", hint:"CC = P + A/i + recurring cost(A/F,i,n)/i. For (b) change n=20." },
+  { id:32, text:"Two methods of weed control. Method A: Line waterway $30,000 (20yr), $2/mile/yr maintenance. Method B: Spray $45/gallon (1 gal/10mi), equipment $2,500 (3yr). At 10%: (a) Breakeven miles? (b) Best for 400 miles?", co:4, bl:4, marks:4, year:"Nov 2022", type:"numerical", hint:"Express AW of each as function of miles X. Set equal and solve for breakeven X. Substitute X=400 for recommendation." },
+  { id:33, text:"Old printing machine (bought $20K, 2 yrs ago). Current market value $10K. Operating cost $8K/year, new salvage $2.5K. New machine $18K, 5yr life, no salvage, $6K/year maintenance. MARR=12%. Should company replace? Use insider's view.", co:4, bl:4, marks:4, year:"Dec 2021", type:"numerical", hint:"Insider's view: treat old machine's current market value as its 'first cost'. Compare EUAC of both." },
+  { id:34, text:"Company is considering replacing 3-yr-old machine. Old: first cost 1,50,000, AOC 23,000, life 15yr, salvage 10,000, current market 1,00,000. New: 1,90,000, AOC 18,000, life 15yr, salvage 15,000. At 12%, should company replace?", co:4, bl:4, marks:3, year:"May 2022", type:"numerical", hint:"Use outsider's view. Old machine: first cost = current market value. Compute EUAC for both." },
+  { id:35, text:"Rock pit: Box loader + conveyor Rs.2,64,000 (5yr, no salvage) vs 2 shovel loaders each Rs.42,000 (3yr, 2-yr-old fetches Rs.10,000). Shovels cost Rs.36,000/year more to operate. i=12%. Use Present Worth method.", co:4, bl:4, marks:3, year:"May 2022", type:"numerical", hint:"LCM = 15 years. Box loader: one cost at 0. Shovels: multiple replacement cycles. Include operating cost difference." },
+  { id:36, text:"Hewett Electronics: Variable speed ($270K, AOC $135K, SV $75K, 6yr) vs Dual speed ($245K, AOC $139K, SV $35K, 6yr). MARR=12%. (a) Tabulate incremental CF (b) Draw CFD (c) Recommend based on incremental IRR.", co:4, bl:4, marks:3, year:"May 2022", type:"numerical", hint:"Incremental = Variable - Dual. Find IRR of incremental CF. If > 12%, choose Variable Speed." },
+  { id:37, text:"An asset costs Rs.5,000, salvage Rs.500, life 5 years. Determine depreciation schedule using Double Declining Balance method.", co:4, bl:3, marks:3, year:"May 2022", type:"numerical", hint:"DDB rate = 2/n. Depreciation = rate × book value. Stop when book value = salvage value." },
+  { id:38, text:"An 8-year-old asset vs two challengers. Defender: AOC 9000, SV 1500, 5yr. Challenger 1: 30000, AOC 4500, SV 3000, 5yr. Challenger 2: 54000, AOC 3600, SV 1500, 5yr. Trade-in values given. i=12%. Best course of action?", co:4, bl:4, marks:3, year:"Jul 2022", type:"numerical", hint:"Cash flow approach: calculate EUAC for defender, then compare with each challenger's EUAC." },
+  { id:39, text:"Machine with 6yr life bought 2yr ago for Rs.10,000. AOC Rs.750, SV Rs.1,000. New machine: Rs.10,000, 5yr, SV Rs.4,000, AOC Rs.500. Supplier takes old for Rs.6,500. At 12% compounded annually, should company replace?", co:4, bl:4, marks:3, year:"Jul 2022", type:"numerical", hint:"Old machine first cost = trade-in value Rs.6,500 (opportunity cost approach). Compare EUAC of defender vs challenger." },
+  { id:40, text:"Automobile company converts plant from economy to sports cars: $200M (20% SV within 5yr), cost/car $21K, selling price $33K, year 1 capacity 4000 units. At 12%, find uniform annual production increase to recover investment in 3 years.", co:4, bl:4, marks:4, year:"May 2022", type:"numerical", hint:"Revenue model: year k production = 4000 + (k-1)G. Set NPW = 0 and solve for G (gradient)." },
+  { id:41, text:"Four machines for production improvement (life 10yr, MARR=11%). Missing values A,B,C,D,E in IRR analysis table. Find values using incremental ROR analysis.", co:4, bl:4, marks:5, year:"Dec 2021 MCQ", type:"mcq", hint:"For machine with known annual flows, overall IRR = find i where NPW=0. Incremental: apply same to difference in cash flows." },
+  { id:42, text:"A company is comparing Vendor A ($500K, 15yr, $48,170/yr) vs Vendor B ($600K, 15yr, $65,880/yr). Incremental IRR = 15.73%. Which is preferred?", co:4, bl:4, marks:1, year:"Dec 2021 MCQ", type:"mcq", hint:"Choose higher investment (Vendor B) if incremental IRR > MARR. Both IRRs must also exceed MARR." },
+  { id:43, text:"Economic service life results in: (a) Minimum equivalent annual cost (b) Maximum equivalent annual cost (c) Both (d) None.", co:4, bl:1, marks:1, year:"Dec 2021 MCQ", type:"mcq", hint:"ESL minimizes the total equivalent annual cost (capital + operating). Answer: (a)." },
+];
+
+const TOPICS = [
+  {n:1, text:"Time value of money: meaning, importance, Interest types", co:1},
+  {n:2, text:"Time value of money: meaning, importance, Interest types (contd.)", co:1},
+  {n:3, text:"Time value equivalence, Interest factors for discrete compounding", co:1},
+  {n:4, text:"Compound and Annuity based interest formula with Examples", co:1},
+  {n:5, text:"Compound and Annuity based interest formula with Examples (contd.)", co:1},
+  {n:6, text:"Compound and Annuity based interest formula with Examples (contd.)", co:1},
+  {n:7, text:"Arithmetic gradient series factor, Problems", co:1},
+  {n:8, text:"Nominal and effective interest rate, Problems", co:1},
+  {n:9, text:"Nominal and effective interest rate, Problems (contd.)", co:1},
+  {n:10, text:"Nominal and effective interest rate, Problems (contd.)", co:1},
+  {n:11, text:"Examples: all formulas, nominal and effective interest rate concepts", co:1},
+  {n:12, text:"Economic evaluation of alternatives: Bases, Present Worth and Future Worth Methods", co:1},
+  {n:13, text:"Economic evaluation: Present Worth and Future Worth Methods, Problems", co:4},
+  {n:14, text:"Economic evaluation: Present Worth and Future Worth Methods, Problems", co:4},
+  {n:15, text:"Economic evaluation: Capitalized equivalent amount", co:1},
+  {n:16, text:"Economic evaluation: Capitalized equivalent amount (contd.)", co:4},
+  {n:17, text:"Economic evaluation: Annual Worth Method, Determining Annual equivalent amount", co:4},
+  {n:18, text:"Economic evaluation: Capital recovery with return, Annual Worth numericals", co:4},
+  {n:19, text:"Economic evaluation: Rate of Return method", co:1},
+  {n:20, text:"Economic evaluation: Rate of Return method (contd.)", co:4},
+  {n:21, text:"Economic evaluation: Rate of Return method (contd.)", co:4},
+  {n:22, text:"Replacement Analysis: Reasons, Evaluation of alternatives", co:4},
+  {n:23, text:"Replacement Analysis: Unequal lives, Economic life of asset", co:4},
+  {n:24, text:"Replacement Analysis: Economic life, Application numericals", co:4},
+  {n:25, text:"Depreciation: Methods with numericals", co:[3,4]},
+  {n:26, text:"Depreciation: Methods with numericals (contd.)", co:[3,4]},
+  {n:27, text:"Break-even Analysis: Meaning, Assumptions, single & multi-product firms", co:[3,4]},
+  {n:28, text:"Break-even Analysis: single & multi-product firms (contd.)", co:[3,4]},
+  {n:29, text:"Break-even Analysis: single & multi-product firms (contd.)", co:[3,4]},
+  {n:30, text:"Financial Management: Nature, objectives, scope, Financial Statement Analysis", co:2},
+  {n:31, text:"Financial Statement Analysis: Ratio analysis, Problems", co:2},
+  {n:32, text:"Financial Statement Analysis: Ratio analysis, Problems (contd.)", co:2},
+  {n:33, text:"Financial Statement Analysis: Ratio analysis, Problems (contd.)", co:2},
+  {n:34, text:"Risk and its concepts, Evaluation of Project Risks", co:3},
+  {n:35, text:"Risk and its concepts, Evaluation of Project Risks (contd.)", co:3},
+  {n:36, text:"Risk and its concepts, Evaluation of Project Risks (contd.)", co:3},
+];
+
+const FORMULAS = {
+  "Time Value": [
+    { name:"Future Worth", expr:"F = P(1+i)^n = P(F/P, i, n)", desc:"Computes future value of a present amount at interest rate i over n periods." },
+    { name:"Present Worth", expr:"P = F/(1+i)^n = F(P/F, i, n)", desc:"Brings a future amount back to present." },
+    { name:"Uniform Series FW", expr:"F = A[(1+i)^n - 1]/i = A(F/A, i, n)", desc:"Future worth of n equal end-of-period payments." },
+    { name:"Uniform Series PW", expr:"P = A[(1+i)^n - 1]/[i(1+i)^n] = A(P/A, i, n)", desc:"Present worth of n equal end-of-period payments." },
+    { name:"Capital Recovery", expr:"A = P[i(1+i)^n]/[(1+i)^n - 1] = P(A/P, i, n)", desc:"Equal payment to recover a present amount over n periods." },
+    { name:"Sinking Fund", expr:"A = F·i/[(1+i)^n - 1] = F(A/F, i, n)", desc:"Equal deposit needed to accumulate future sum F." },
+  ],
+  "Interest Rates": [
+    { name:"Effective Annual Rate", expr:"EAR = (1 + r/m)^m - 1", desc:"r = nominal rate, m = compounding periods per year." },
+    { name:"Effective Period Rate", expr:"i_eff = (1 + r/m)^(m/k) - 1", desc:"k = number of payment periods per year." },
+    { name:"Perpetuity PW", expr:"P = A/i", desc:"Present worth of an infinite uniform series." },
+  ],
+  "Arithmetic Gradient": [
+    { name:"Gradient PW Factor", expr:"P = G(P/G, i, n) = G[(1+i)^n - in - 1]/[i²(1+i)^n]", desc:"G is the constant gradient amount starting at end of period 2." },
+    { name:"Gradient AW Factor", expr:"A = G(A/G, i, n) = G[1/i - n/((1+i)^n-1)]", desc:"Converts gradient series to equivalent uniform series." },
+  ],
+  "Depreciation": [
+    { name:"Straight Line (SLM)", expr:"D = (P - S) / n", desc:"P = first cost, S = salvage, n = life. Constant annual depreciation." },
+    { name:"Declining Balance (DB)", expr:"d = 1 - (S/P)^(1/n)\nDk = d·BVk-1", desc:"Book value each year = (1-d)^k × P." },
+    { name:"Double Declining Balance", expr:"DDB rate = 2/n\nDk = (2/n)·BVk-1", desc:"Stop depreciating when BV = Salvage value." },
+    { name:"Book Value", expr:"BVk = P(1 - d)^k", desc:"Book value after k years using DB method." },
+  ],
+  "Annual Worth": [
+    { name:"Annual Worth", expr:"AW = PW(A/P, i, n)", desc:"Converts PW to equivalent uniform annual series." },
+    { name:"Capital Recovery + O&M", expr:"AW = (P-S)(A/P,i,n) + Si + OC", desc:"Full annual worth including capital recovery with return and annual O&M." },
+    { name:"Capitalized Cost", expr:"CC = P + A/i + A_recur(A/F,i,n)/i", desc:"PW of an infinite series with recurring costs." },
+  ],
+  "Financial Ratios": [
+    { name:"Current Ratio", expr:"CR = Current Assets / Current Liabilities", desc:"Measures short-term liquidity. CR > 2 generally acceptable." },
+    { name:"Quick Ratio", expr:"QR = (Current Assets - Inventory) / CL", desc:"Stricter liquidity measure excluding illiquid inventory." },
+    { name:"Inventory Turnover", expr:"ITR = COGS / Average Inventory", desc:"How many times inventory is sold/replaced per year." },
+    { name:"Avg Collection Period", expr:"ACP = (Avg Debtors / Sales) × 365", desc:"Average days to collect receivables." },
+    { name:"Interest Coverage", expr:"ICR = EBIT / Interest Expense", desc:"Ability to service debt. Higher is better (>1.5)." },
+    { name:"Debt-Equity Ratio", expr:"D/E = Total Debt / Shareholders' Equity", desc:"Capital structure leverage indicator." },
+    { name:"Gross Profit Ratio", expr:"GPR = (Sales - COGS) / Sales × 100", desc:"Percentage of revenue retained after direct costs." },
+    { name:"Return on Investment", expr:"ROI = Net Income / Total Assets × 100", desc:"Efficiency of asset use in generating profit." },
+  ],
+  "Break-Even": [
+    { name:"Break-Even Quantity", expr:"Q_BE = FC / (SP - VC)", desc:"FC = fixed cost, SP = selling price/unit, VC = variable cost/unit." },
+    { name:"Break-Even Sales (Rs.)", expr:"BES = FC / (1 - VC/SP)", desc:"Revenue at which total cost equals total revenue." },
+    { name:"Contribution Margin", expr:"CM = SP - VC", desc:"Profit contribution per unit before fixed costs." },
+  ],
+  "Rate of Return": [
+    { name:"IRR Definition", expr:"∑ NCF_t/(1+IRR)^t = 0", desc:"Find i* such that NPW = 0. Accept if IRR ≥ MARR." },
+    { name:"Incremental ROR", expr:"Find i* for ΔCF = CF_high - CF_low", desc:"Select higher investment if incremental IRR ≥ MARR." },
+  ],
+};
+
+const ASSESSMENTS = [
+  { id:"IA1", title:"Class Test (IA 1)", duration:"30 min", marks:5, type:"Numericals (1-2 problems)", topics:"Time Value of Money", bl:"BL 3 and above" },
+  { id:"IA2", title:"Quiz (IA 2)", duration:"30 min", marks:5, type:"10 MCQs × 0.5 marks", topics:"Annual Worth, Regular & IRR methods, Replacement Analysis", bl:"BL 3 and above" },
+  { id:"IA3", title:"Take Home Assignment (IA 3)", duration:"NA", marks:5, type:"Descriptive", topics:"Financial Statement Analysis and Risk in Projects", bl:"BL 3 and above" },
+  { id:"IA4", title:"Quiz (IA 4)", duration:"30 min", marks:5, type:"10 MCQs × 0.5 marks", topics:"Financial Statement Analysis and Risk in Projects", bl:"BL 3 and above" },
+  { id:"MT", title:"Mid-Term Test", duration:"90 min", marks:30, type:"As per QP template by Academic section", topics:"TVM, Evaluation of Alternatives (PW, FW, AW), Capitalized Cost, Annual Worth, IRR Methods", bl:"BL 3 and above" },
+  { id:"RE", title:"Regular / Make-Up Exam", duration:"50 min", marks:50, type:"5 full questions × 10 marks (3 parts each)", topics:"All topics", bl:"BL 3 and above" },
+];
+
+// ── STATE ─────────────────────────────────────────────────
+let currentCO = 0, currentBL = 0, currentType = 'all';
+let currentFormulaTab = "Time Value";
+let currentPanel = "questions";
+
+// ── THEME ─────────────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+
+// ── PANEL ─────────────────────────────────────────────────
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  currentPanel = name;
+  if(name === 'topics') renderTopics();
+  if(name === 'formulas') renderFormulas();
+  if(name === 'assessment') renderAssessment();
+}
+
+// ── CO FILTER ─────────────────────────────────────────────
+function filterByCO(co, card) {
+  document.querySelectorAll('.co-card').forEach(c => c.classList.remove('active'));
+  if(currentCO === co) { currentCO = 0; }
+  else { currentCO = co; if(card) card.classList.add('active'); }
+  renderQuestions();
+  if(currentPanel === 'topics') renderTopics();
+}
+
+function filterByCOSidebar(co, btn) {
+  document.querySelectorAll('.sidebar-filter button[onclick^="filterByCOSidebar"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCO = co;
+  document.querySelectorAll('.co-card').forEach(c => c.classList.remove('active'));
+  if(co > 0) {
+    const card = document.querySelector(`.co-card[data-co="${co}"]`);
+    if(card) card.classList.add('active');
+  }
+  renderQuestions();
+  if(currentPanel === 'topics') renderTopics();
+}
+
+function filterByBL(bl, btn) {
+  document.querySelectorAll('.sidebar-filter button[onclick^="filterByBL"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentBL = bl;
+  renderQuestions();
+}
+
+function filterByType(type, btn) {
+  document.querySelectorAll('.sidebar-filter button[onclick^="filterByType"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentType = type;
+  renderQuestions();
+}
+
+// ── QUESTIONS ─────────────────────────────────────────────
+function renderQuestions() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  let filtered = QUESTIONS.filter(q => {
+    const matchCO = currentCO === 0 || q.co === currentCO;
+    const matchBL = currentBL === 0 || q.bl === currentBL;
+    const matchType = currentType === 'all' || q.type === currentType;
+    const matchSearch = !search || q.text.toLowerCase().includes(search) || q.hint.toLowerCase().includes(search) || q.year.toLowerCase().includes(search);
+    return matchCO && matchBL && matchType && matchSearch;
+  });
+
+  // Update sidebar counts
+  document.getElementById('count-all').textContent = QUESTIONS.length;
+  [1,2,3,4].forEach(co => {
+    document.getElementById('count-' + co).textContent = QUESTIONS.filter(q => q.co === co).length;
+  });
+
+  const rc = document.getElementById('resultCount');
+  rc.innerHTML = `Showing <b>${filtered.length}</b> of <b>${QUESTIONS.length}</b> questions`;
+
+  const list = document.getElementById('questionList');
+  if(filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div>No questions match your filters</div>`;
+    return;
+  }
+  list.className = 'question-list stagger';
+  list.innerHTML = filtered.map(q => {
+    const coClass = `tag-co${q.co}`;
+    const blClass = q.bl >= 4 ? 'tag-bl4' : 'tag-bl3';
+    return `
+    <div class="q-card" onclick="toggleQ(this)" id="q-${q.id}">
+      <div class="q-header">
+        <div style="flex:1">
+          <div class="q-meta">
+            <span class="tag ${coClass}">CO${q.co}</span>
+            <span class="tag ${blClass}">BL ${q.bl}</span>
+            <span class="tag tag-marks">${q.marks}M</span>
+            <span class="tag tag-year">${q.year}</span>
+            <span class="tag tag-type">${q.type}</span>
+          </div>
+          <div class="q-text">${q.text}</div>
+        </div>
+        <div class="q-expand-icon">▼</div>
+      </div>
+      <div class="q-body">
+        <div class="q-hint"><b>💡 Approach:</b> ${q.hint}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleQ(card) {
+  card.classList.toggle('expanded');
+}
+
+// ── TOPICS ────────────────────────────────────────────────
+function renderTopics() {
+  let filtered = TOPICS;
+  if(currentCO > 0) {
+    filtered = TOPICS.filter(t => {
+      if(Array.isArray(t.co)) return t.co.includes(currentCO);
+      return t.co === currentCO;
+    });
+  }
+  const coColors = ['','var(--accent)','var(--accent3)','var(--orange)','var(--accent2)'];
+  const list = document.getElementById('topicList');
+  list.className = 'topic-list stagger';
+  list.innerHTML = filtered.map(t => {
+    const cos = Array.isArray(t.co) ? t.co : [t.co];
+    const coTags = cos.map(c => `<span class="tag tag-co${c}" style="font-size:0.62rem;">CO${c}</span>`).join('');
+    return `
+    <div class="topic-item">
+      <div class="lesson-num">L${t.n}</div>
+      <div class="topic-text">${t.text}</div>
+      <div class="topic-co" style="display:flex;gap:4px;">${coTags}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── FORMULAS ──────────────────────────────────────────────
+function renderFormulas() {
+  const tabs = document.getElementById('formulaTabs');
+  const grid = document.getElementById('formulaGrid');
+  tabs.innerHTML = Object.keys(FORMULAS).map(k =>
+    `<button class="formula-tab ${k===currentFormulaTab?'active':''}" onclick="setFormulaTab('${k}', this)">${k}</button>`
+  ).join('');
+  const formulas = FORMULAS[currentFormulaTab];
+  grid.className = 'formula-grid stagger';
+  grid.innerHTML = formulas.map(f => `
+    <div class="formula-card">
+      <div class="formula-name">${f.name}</div>
+      <div class="formula-expr">${f.expr}</div>
+      <div class="formula-desc">${f.desc}</div>
+    </div>`).join('');
+}
+
+function setFormulaTab(tab, btn) {
+  currentFormulaTab = tab;
+  renderFormulas();
+}
+
+// ── ASSESSMENT ────────────────────────────────────────────
+function renderAssessment() {
+  const tl = document.getElementById('timeline');
+  tl.className = 'timeline stagger';
+  tl.innerHTML = ASSESSMENTS.map((a, i) => `
+    <div class="timeline-item">
+      <div class="tl-left">
+        <div class="tl-dot">${a.id}</div>
+        ${i < ASSESSMENTS.length-1 ? '<div class="tl-line"></div>' : ''}
+      </div>
+      <div style="flex:1;padding-bottom:${i<ASSESSMENTS.length-1?'0':'0'}">
+        <div class="tl-card">
+          <div class="tl-title">${a.title}</div>
+          <div class="tl-detail">⏱ ${a.duration} &nbsp;·&nbsp; 📝 ${a.type}</div>
+          <div class="tl-topics">📚 ${a.topics}</div>
+          <div class="tl-topics">🌟 Bloom's: ${a.bl}</div>
+          <div><span class="tl-marks">${a.marks} Marks</span></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderQuestions();
+  renderTopics();
+  renderFormulas();
+  renderAssessment();
+});
+</script>
+</body>
+</html>
